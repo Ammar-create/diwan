@@ -42,10 +42,21 @@ class DashboardViewModel(
         }
     }
 
-    fun addScannedPoem(poem: Poem) {
+    fun addPoemToFolio(poem: Poem) {
         _uiState.update { current ->
-            current.copy(poems = listOf(poem) + current.poems)
+            if (current.poems.any { it.id == poem.id }) {
+                current
+            } else {
+                current.copy(
+                    poems = listOf(poem) + current.poems,
+                    statusToast = "Saved to Personal Folio"
+                )
+            }
         }
+    }
+
+    fun addScannedPoem(poem: Poem) {
+        addPoemToFolio(poem)
     }
 
     fun deletePoem(poemId: String) {

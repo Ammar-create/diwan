@@ -34,9 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ammar.diwan.data.models.Poem
@@ -83,12 +86,26 @@ fun ExportCardDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "طغریٰ (Export Card)",
-                        fontFamily = LocalEnglishFont.current,
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "طغریٰ",
+                            fontFamily = LocalUrduFont.current,
+                            fontSize = 22.sp,
+                            lineHeight = 44.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = TextStyle(
+                                platformStyle = PlatformTextStyle(includeFontPadding = true),
+                                textDirection = TextDirection.Rtl
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "(Export Card)",
+                            fontFamily = LocalEnglishFont.current,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     IconButton(onClick = onDismiss, modifier = Modifier.size(32.dp)) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
@@ -128,9 +145,13 @@ fun ExportCardDialog(
                                 text = "${poem.titleUrdu} — ${poem.poetUrdu}",
                                 fontFamily = LocalUrduFont.current,
                                 fontSize = 18.sp,
-                                lineHeight = 32.sp,
+                                lineHeight = 36.sp,
                                 color = MaterialTheme.colorScheme.primary,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                style = TextStyle(
+                                    platformStyle = PlatformTextStyle(includeFontPadding = true),
+                                    textDirection = TextDirection.Rtl
+                                )
                             )
 
                             Column(
@@ -142,9 +163,13 @@ fun ExportCardDialog(
                                         text = v.urdu,
                                         fontFamily = LocalUrduFont.current,
                                         fontSize = 16.sp,
-                                        lineHeight = 30.sp,
+                                        lineHeight = 32.sp,
                                         color = MaterialTheme.colorScheme.onBackground,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        style = TextStyle(
+                                            platformStyle = PlatformTextStyle(includeFontPadding = true),
+                                            textDirection = TextDirection.Rtl
+                                        )
                                     )
                                     if (includeRoman) {
                                         Text(

@@ -114,7 +114,7 @@ fun PoemDeck(
 
         Text(
             text = "${pagerState.currentPage + 1} of ${poems.size}",
-            style = DiwanTypography.labelSmall,
+            style = DiwanTypography.labelSmall.copy(fontFeatureSettings = "tnum"),
             color = InkMuted,
             modifier = Modifier.padding(bottom = 8.dp)
         )

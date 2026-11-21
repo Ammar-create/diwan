@@ -1,10 +1,9 @@
 package com.ammar.diwan.ui.dashboard
 
 import android.content.Intent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,17 +21,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Chat
-import androidx.compose.material.icons.rounded.DocumentScanner
 import androidx.compose.material.icons.rounded.FontDownload
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,12 +34,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ammar.diwan.ui.components.DiwanNastaliqText
+import com.ammar.diwan.ui.theme.DiwanTheme
 import com.ammar.diwan.ui.theme.LocalEnglishFont
-import com.ammar.diwan.ui.theme.LocalUrduFont
+import com.ammar.diwan.ui.theme.tactilePress
 
 @Composable
 fun DashboardScreen(
@@ -57,6 +54,8 @@ fun DashboardScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val showRoman by viewModel.showRomanUrdu.collectAsState()
+    val colors = DiwanTheme.colors
+    val typo = DiwanTheme.typography
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -70,7 +69,7 @@ fun DashboardScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(colors.canvas)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -84,18 +83,17 @@ fun DashboardScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(
+                    DiwanNastaliqText(
                         text = "دیوان",
-                        fontFamily = LocalUrduFont.current,
-                        fontSize = 32.sp,
-                        lineHeight = 36.sp,
-                        color = MaterialTheme.colorScheme.primary
+                        size = 32.sp,
+                        lineHeightMultiplier = 1.95f,
+                        color = colors.lapisInk
                     )
                     Text(
                         text = "Personal Folio",
                         fontFamily = LocalEnglishFont.current,
                         fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = colors.textSecondary
                     )
                 }
 
@@ -103,60 +101,71 @@ fun DashboardScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Toggle Romanization
-                    Surface(
+                    // Toggle Romanization Capsule
+                    Box(
                         modifier = Modifier
-                            .clickable { viewModel.toggleRomanUrdu() },
-                        shape = RoundedCornerShape(10.dp),
-                        color = if (showRoman) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, if (showRoman) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (showRoman) colors.lapisSoftTint else colors.surfaceElevated)
+                            .border(
+                                BorderStroke(
+                                    0.5.dp,
+                                    if (showRoman) colors.lapisInk.copy(alpha = 0.4f) else colors.hairline
+                                ),
+                                RoundedCornerShape(12.dp)
+                            )
+                            .tactilePress(pressedScale = 0.95f) { viewModel.toggleRomanUrdu() }
+                            .padding(horizontal = 10.dp, vertical = 7.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Rounded.FontDownload,
                                 contentDescription = "Roman Urdu Toggle",
-                                tint = if (showRoman) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                tint = if (showRoman) colors.lapisInk else colors.textSecondary,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = "Roman",
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = if (showRoman) FontWeight.Bold else FontWeight.Normal,
-                                color = if (showRoman) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                style = typo.caption.copy(
+                                    fontWeight = if (showRoman) FontWeight.SemiBold else FontWeight.Normal
+                                ),
+                                color = if (showRoman) colors.lapisInk else colors.textSecondary
                             )
                         }
                     }
 
-                    // Poet's Salon (Chat)
-                    IconButton(
-                        onClick = onNavigateToChat,
+                    // Poet's Salon (Chat Sanctuary) Icon Button
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(38.dp)
-                            .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
+                            .clip(CircleShape)
+                            .background(colors.surfaceElevated)
+                            .border(0.5.dp, colors.hairline, CircleShape)
+                            .tactilePress(pressedScale = 0.92f, onClick = onNavigateToChat)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.Chat,
                             contentDescription = "Poet's Salon",
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            tint = colors.textPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }
 
-                    // Settings
-                    IconButton(
-                        onClick = onNavigateToSettings,
+                    // Settings Icon Button
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(38.dp)
-                            .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
+                            .clip(CircleShape)
+                            .background(colors.surfaceElevated)
+                            .border(0.5.dp, colors.hairline, CircleShape)
+                            .tactilePress(pressedScale = 0.92f, onClick = onNavigateToSettings)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Settings,
                             contentDescription = "Settings",
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            tint = colors.textPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -165,7 +174,7 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Main Poetry Carousel
+            // Main Poetry Carousel Deck
             Box(modifier = Modifier.weight(1f)) {
                 PoemDeck(
                     poems = state.poems,
@@ -180,31 +189,38 @@ fun DashboardScreen(
             }
         }
 
-        // Floating Calligraphy OCR Button (bottom-right)
-        FloatingActionButton(
-            onClick = onNavigateToScan,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
-            shape = RoundedCornerShape(16.dp),
+        // Floating Chat Sanctuary Capsule Button (replaces standalone OCR with unified sanctuary)
+        Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(24.dp),
+                    ambientColor = colors.lapisInk.copy(alpha = 0.15f),
+                    spotColor = colors.lapisInk.copy(alpha = 0.20f)
+                )
+                .clip(RoundedCornerShape(24.dp))
+                .background(colors.lapisInk)
+                .border(BorderStroke(0.75.dp, colors.specularBorder), RoundedCornerShape(24.dp))
+                .tactilePress(pressedScale = 0.95f, onClick = onNavigateToChat)
+                .padding(horizontal = 18.dp, vertical = 12.dp)
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.DocumentScanner,
-                    contentDescription = "Scan Calligraphy",
-                    modifier = Modifier.size(20.dp)
+                    imageVector = Icons.AutoMirrored.Rounded.Chat,
+                    contentDescription = "Poet's Salon Sanctuary",
+                    tint = colors.onLapisInk,
+                    modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Scan",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
+                    text = "Poet's Salon",
+                    style = typo.body.copy(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                    color = colors.onLapisInk
                 )
             }
         }

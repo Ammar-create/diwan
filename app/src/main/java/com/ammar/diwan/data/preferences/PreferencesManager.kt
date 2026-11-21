@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "diwan_settings")
 
-class PreferencesManager(private val context: Context) {
+class PreferencesManager(val context: Context) {
 
     companion object {
         val KEY_SETUP_COMPLETED = booleanPreferencesKey("setup_completed")

@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -52,19 +53,35 @@ fun DiwanTheme(
     urduFontKey: String = "noto_nastaliq",
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val urduFont = getUrduFont(urduFontKey)
     val englishFont = getEnglishFont(englishFontKey)
-    val typography = createDiwanTypography(englishFont, urduFont)
+    val mode = if (darkTheme) DiwanThemeMode.DARK else DiwanThemeMode.LIGHT
+
+    val diwanTypography = remember(urduFont, englishFont) {
+        DiwanTypography(
+            urduFamily = urduFont,
+            latinDisplayFamily = englishFont,
+            uiBodyFamily = Inter
+        )
+    }
+    val materialTypography = remember(urduFont, englishFont) {
+        createMaterialTypography(englishFont, urduFont)
+    }
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     CompositionLocalProvider(
         LocalUrduFont provides urduFont,
         LocalEnglishFont provides englishFont
     ) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = typography,
-            content = content
-        )
+        ProvideDiwanTheme(
+            themeMode = mode,
+            typography = diwanTypography
+        ) {
+            MaterialTheme(
+                colorScheme = colorScheme,
+                typography = materialTypography,
+                content = content
+            )
+        }
     }
 }

@@ -1,12 +1,14 @@
 package com.ammar.diwan.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
 import com.ammar.diwan.R
 
@@ -55,10 +57,10 @@ fun getEnglishFont(key: String): FontFamily = when (key) {
     else -> InstrumentSerif
 }
 
-fun createDiwanTypography(
+fun createMaterialTypography(
     englishFont: FontFamily = InstrumentSerif,
     urduFont: FontFamily = NotoNastaliqUrdu
-) = Typography(
+): Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = englishFont,
         fontWeight = FontWeight.Normal,
@@ -77,15 +79,19 @@ fun createDiwanTypography(
         fontFamily = urduFont,
         fontWeight = FontWeight.Normal,
         fontSize = 32.sp,
-        lineHeight = 52.sp,
-        letterSpacing = 0.sp
+        lineHeight = 64.sp,
+        letterSpacing = 0.sp,
+        textDirection = TextDirection.Rtl,
+        platformStyle = PlatformTextStyle(includeFontPadding = true)
     ),
     headlineMedium = TextStyle(
         fontFamily = urduFont,
         fontWeight = FontWeight.Normal,
         fontSize = 26.sp,
-        lineHeight = 46.sp,
-        letterSpacing = 0.sp
+        lineHeight = 52.sp,
+        letterSpacing = 0.sp,
+        textDirection = TextDirection.Rtl,
+        platformStyle = PlatformTextStyle(includeFontPadding = true)
     ),
     bodyLarge = TextStyle(
         fontFamily = urduFont,
@@ -93,7 +99,9 @@ fun createDiwanTypography(
         fontSize = 24.sp,
         lineHeight = 48.sp,
         lineBreak = LineBreak.Paragraph,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
+        textDirection = TextDirection.Rtl,
+        platformStyle = PlatformTextStyle(includeFontPadding = true)
     ),
     bodyMedium = TextStyle(
         fontFamily = englishFont,
@@ -125,4 +133,7 @@ fun createDiwanTypography(
     )
 )
 
-val DiwanTypography: Typography = createDiwanTypography()
+fun createDiwanTypography(
+    englishFont: FontFamily = InstrumentSerif,
+    urduFont: FontFamily = NotoNastaliqUrdu
+): Typography = createMaterialTypography(englishFont, urduFont)
