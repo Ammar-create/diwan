@@ -185,7 +185,7 @@ fun PoetSalonScreen(
                                 AssistantManuscriptMessage(
                                     message = message,
                                     onSavePoem = { poem ->
-                                        viewModel.savePoemToFolio(message.id, onSavePoemToFolio)
+                                        viewModel.savePoemToFolio(message.id, onPoemSavedToFolio)
                                     },
                                     modifier = Modifier.fillMaxWidth()
                                 )

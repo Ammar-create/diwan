@@ -219,7 +219,7 @@ private fun OnboardingTopRail(
     ) {
         // Top Left: Back Button
         Box(modifier = Modifier.width(60.dp), contentAlignment = Alignment.CenterStart) {
-            AnimatedVisibility(
+            androidx.compose.animation.AnimatedVisibility(
                 visible = currentAct > 0,
                 enter = fadeIn(DiwanMotion.enterFade(180)),
                 exit = fadeOut(DiwanMotion.exitFade(140))
@@ -263,7 +263,7 @@ private fun OnboardingTopRail(
 
         // Top Right: Skip Button
         Box(modifier = Modifier.width(60.dp), contentAlignment = Alignment.CenterEnd) {
-            AnimatedVisibility(
+            androidx.compose.animation.AnimatedVisibility(
                 visible = currentAct == 2,
                 enter = fadeIn(DiwanMotion.enterFade(180)),
                 exit = fadeOut(DiwanMotion.exitFade(140))

@@ -46,7 +46,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
 import androidx.compose.material.icons.rounded.Close
@@ -438,7 +438,7 @@ private fun MorphingActionButton(
                             .background(colors.surfaceGrouped.copy(alpha = 0.40f))
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowUpward,
+                            imageVector = Icons.Rounded.ArrowUpward,
                             contentDescription = "Send Disabled",
                             tint = colors.textTertiary.copy(alpha = 0.45f),
                             modifier = Modifier.size(18.dp)
@@ -458,7 +458,7 @@ private fun MorphingActionButton(
                             }
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowUpward,
+                            imageVector = Icons.Rounded.ArrowUpward,
                             contentDescription = "Send",
                             tint = colors.onLapisInk,
                             modifier = Modifier.size(18.dp)

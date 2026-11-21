@@ -51,6 +51,10 @@ object DiwanMotion {
         dampingRatio = 0.88f,
         stiffness = 380f
     )
+    val FluidSpatialInt = spring<Int>(
+        dampingRatio = 0.88f,
+        stiffness = 380f
+    )
     val FluidSpatialDp = spring<Dp>(
         dampingRatio = 0.88f,
         stiffness = 380f

@@ -335,8 +335,8 @@ class PoetSalonViewModel(
             }
 
             val parser = StreamParser()
-            @Volatile var isDirty = false
-            @Volatile var isStreamFinished = false
+            var isDirty = false
+            var isStreamFinished = false
 
             fun flushToState() {
                 val cleanContent = parseDisplayContent(parser.rawContent.toString())

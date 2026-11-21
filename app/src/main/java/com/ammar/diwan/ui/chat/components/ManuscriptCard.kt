@@ -216,8 +216,8 @@ fun ManuscriptCard(
                         AnimatedContent(
                             targetState = isCopied,
                             transitionSpec = {
-                                (fadeIn(DiwanMotion.enterFade(160)) + scaleIn(0.9f)) togetherWith
-                                    (fadeOut(DiwanMotion.exitFade(120)) + scaleOut(0.9f))
+                                (fadeIn(DiwanMotion.enterFade(160)) + scaleIn(initialScale = 0.9f)) togetherWith
+                                    (fadeOut(DiwanMotion.exitFade(120)) + scaleOut(targetScale = 0.9f))
                             },
                             label = "copy_state"
                         ) { copied ->
@@ -274,7 +274,7 @@ fun ManuscriptCard(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .animateContentSize(DiwanMotion.SnappySpring)
+                            .animateContentSize(DiwanMotion.FluidSpatial)
                             .clip(RoundedCornerShape(50))
                             .background(buttonFill)
                             .then(
@@ -302,8 +302,8 @@ fun ManuscriptCard(
                         AnimatedContent(
                             targetState = localSaved,
                             transitionSpec = {
-                                (fadeIn(DiwanMotion.enterFade(180)) + scaleIn(0.92f)) togetherWith
-                                    (fadeOut(DiwanMotion.exitFade(120)) + scaleOut(0.92f))
+                                (fadeIn(DiwanMotion.enterFade(180)) + scaleIn(initialScale = 0.92f)) togetherWith
+                                    (fadeOut(DiwanMotion.exitFade(120)) + scaleOut(targetScale = 0.92f))
                             },
                             label = "save_btn_state"
                         ) { saved ->
