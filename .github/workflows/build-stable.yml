@@ -1,4 +1,4 @@
-name: Build Diwan Release APK
+name: Build Diwan APKs
 
 on:
   push:
@@ -23,15 +23,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Build Release APK
+      - name: Build Debug and Release APKs
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleRelease --stacktrace
+          ./gradlew :app:assembleDebug :app:assembleRelease --stacktrace
 
-      - name: Upload Release APK
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: diwan-release-apk
-          path: app/build/outputs/apk/release/*.apk
+          name: diwan-apks
+          path: app/build/outputs/apk/**/*.apk
           retention-days: 7

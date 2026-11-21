@@ -29,6 +29,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -44,16 +45,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ammar.diwan.ui.theme.DiwanTypography
-import com.ammar.diwan.ui.theme.InkPrimary
-import com.ammar.diwan.ui.theme.InkSecondary
-import com.ammar.diwan.ui.theme.InstrumentSerif
-import com.ammar.diwan.ui.theme.LapisNavy
-import com.ammar.diwan.ui.theme.NotoNastaliqUrdu
-import com.ammar.diwan.ui.theme.ParchmentBackground
-import com.ammar.diwan.ui.theme.ParchmentBorder
-import com.ammar.diwan.ui.theme.ParchmentSurface
-import com.ammar.diwan.ui.theme.ParchmentSurfaceVariant
+import com.ammar.diwan.ui.theme.LocalEnglishFont
+import com.ammar.diwan.ui.theme.LocalUrduFont
 
 @Composable
 fun DashboardScreen(
@@ -77,7 +70,7 @@ fun DashboardScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(ParchmentBackground)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -93,17 +86,16 @@ fun DashboardScreen(
                 Column {
                     Text(
                         text = "دیوان",
-                        fontFamily = NotoNastaliqUrdu,
+                        fontFamily = LocalUrduFont.current,
                         fontSize = 32.sp,
-                        lineHeight = 1.6.sp,
-                        color = LapisNavy
+                        lineHeight = 36.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         text = "Personal Folio",
-                        fontFamily = InstrumentSerif,
+                        fontFamily = LocalEnglishFont.current,
                         fontSize = 20.sp,
-                        color = InkSecondary,
-                        letterSpacing = (-0.01).sp
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -116,8 +108,8 @@ fun DashboardScreen(
                         modifier = Modifier
                             .clickable { viewModel.toggleRomanUrdu() },
                         shape = RoundedCornerShape(10.dp),
-                        color = if (showRoman) ParchmentSurfaceVariant else ParchmentSurface,
-                        border = BorderStroke(1.dp, if (showRoman) LapisNavy else ParchmentBorder)
+                        color = if (showRoman) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, if (showRoman) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline)
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
@@ -126,15 +118,15 @@ fun DashboardScreen(
                             Icon(
                                 imageVector = Icons.Rounded.FontDownload,
                                 contentDescription = "Roman Urdu Toggle",
-                                tint = if (showRoman) LapisNavy else InkSecondary,
+                                tint = if (showRoman) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = "Roman",
-                                style = DiwanTypography.labelSmall,
+                                style = MaterialTheme.typography.labelSmall,
                                 fontWeight = if (showRoman) FontWeight.Bold else FontWeight.Normal,
-                                color = if (showRoman) LapisNavy else InkSecondary
+                                color = if (showRoman) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -144,12 +136,12 @@ fun DashboardScreen(
                         onClick = onNavigateToChat,
                         modifier = Modifier
                             .size(38.dp)
-                            .background(ParchmentSurface, shape = CircleShape)
+                            .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.Chat,
                             contentDescription = "Poet's Salon",
-                            tint = InkPrimary,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -159,12 +151,12 @@ fun DashboardScreen(
                         onClick = onNavigateToSettings,
                         modifier = Modifier
                             .size(38.dp)
-                            .background(ParchmentSurface, shape = CircleShape)
+                            .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Settings,
                             contentDescription = "Settings",
-                            tint = InkPrimary,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -173,7 +165,7 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Main Poetry Carousel (Quiet, focused entirely on the verses)
+            // Main Poetry Carousel
             Box(modifier = Modifier.weight(1f)) {
                 PoemDeck(
                     poems = state.poems,
@@ -191,8 +183,8 @@ fun DashboardScreen(
         // Floating Calligraphy OCR Button (bottom-right)
         FloatingActionButton(
             onClick = onNavigateToScan,
-            containerColor = LapisNavy,
-            contentColor = ParchmentBackground,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
             elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
@@ -211,7 +203,7 @@ fun DashboardScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Scan",
-                    style = DiwanTypography.labelLarge,
+                    style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold
                 )
             }

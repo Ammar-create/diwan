@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -45,15 +46,8 @@ import com.ammar.diwan.data.models.ChatMessage
 import com.ammar.diwan.ui.theme.DiwanTypography
 import com.ammar.diwan.ui.theme.FoilGoldSubtle
 import com.ammar.diwan.ui.theme.InkMuted
-import com.ammar.diwan.ui.theme.InkPrimary
-import com.ammar.diwan.ui.theme.InkSecondary
-import com.ammar.diwan.ui.theme.InstrumentSerif
-import com.ammar.diwan.ui.theme.LapisNavy
-import com.ammar.diwan.ui.theme.NotoNastaliqUrdu
-import com.ammar.diwan.ui.theme.ParchmentBackground
-import com.ammar.diwan.ui.theme.ParchmentBorder
-import com.ammar.diwan.ui.theme.ParchmentSurface
-import com.ammar.diwan.ui.theme.ParchmentSurfaceVariant
+import com.ammar.diwan.ui.theme.LocalEnglishFont
+import com.ammar.diwan.ui.theme.LocalUrduFont
 
 @Composable
 fun PoetSalonScreen(
@@ -72,7 +66,7 @@ fun PoetSalonScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(ParchmentBackground)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
             .imePadding()
@@ -90,21 +84,21 @@ fun PoetSalonScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         contentDescription = "Back",
-                        tint = InkPrimary
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
                     Text(
                         text = "محفلِ سخن (Poet's Salon)",
-                        fontFamily = InstrumentSerif,
+                        fontFamily = LocalEnglishFont.current,
                         fontSize = 20.sp,
-                        color = InkPrimary
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
                         text = "Literary debate, bahr, and verse curation",
-                        style = DiwanTypography.labelSmall,
-                        color = InkSecondary
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -131,7 +125,7 @@ fun PoetSalonScreen(
                             horizontalArrangement = Arrangement.Start
                         ) {
                             CircularProgressIndicator(
-                                color = LapisNavy,
+                                color = MaterialTheme.colorScheme.primary,
                                 strokeWidth = 2.dp,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -144,8 +138,8 @@ fun PoetSalonScreen(
             if (state.errorMessage != null) {
                 Text(
                     text = state.errorMessage!!,
-                    color = Color(0xFFB00020),
-                    style = DiwanTypography.bodySmall,
+                    color = Color(0xFFEF5350),
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                 )
             }
@@ -153,8 +147,8 @@ fun PoetSalonScreen(
             // Input Bar
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = ParchmentSurface,
-                border = BorderStroke(1.dp, ParchmentBorder)
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Row(
                     modifier = Modifier
@@ -169,12 +163,12 @@ fun PoetSalonScreen(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = LapisNavy,
-                            unfocusedBorderColor = ParchmentBorder,
-                            focusedContainerColor = ParchmentBackground,
-                            unfocusedContainerColor = ParchmentBackground,
-                            focusedTextColor = InkPrimary,
-                            unfocusedTextColor = InkPrimary
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedContainerColor = MaterialTheme.colorScheme.background,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         ),
                         maxLines = 3
                     )
@@ -187,14 +181,14 @@ fun PoetSalonScreen(
                         modifier = Modifier
                             .size(44.dp)
                             .background(
-                                color = if (state.inputText.isNotBlank() && !state.isSending) LapisNavy else ParchmentBorder,
+                                color = if (state.inputText.isNotBlank() && !state.isSending) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                                 shape = CircleShape
                             )
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.Send,
                             contentDescription = "Send",
-                            tint = ParchmentBackground,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -219,8 +213,8 @@ private fun MessageBubble(message: ChatMessage) {
                 bottomStart = if (isUser) 16.dp else 4.dp,
                 bottomEnd = if (isUser) 4.dp else 16.dp
             ),
-            color = if (isUser) LapisNavy else ParchmentSurface,
-            border = BorderStroke(1.dp, if (isUser) LapisNavy else FoilGoldSubtle),
+            color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth(0.85f)
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
@@ -228,10 +222,10 @@ private fun MessageBubble(message: ChatMessage) {
 
                 Text(
                     text = message.content,
-                    fontFamily = if (isUrdu) NotoNastaliqUrdu else DiwanTypography.bodyMedium.fontFamily,
+                    fontFamily = if (isUrdu) LocalUrduFont.current else LocalEnglishFont.current,
                     fontSize = if (isUrdu) 20.sp else 15.sp,
-                    lineHeight = if (isUrdu) 2.1.sp else 22.sp,
-                    color = if (isUser) ParchmentBackground else InkPrimary,
+                    lineHeight = if (isUrdu) 38.sp else 22.sp,
+                    color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                     textAlign = if (isUrdu && !isUser) TextAlign.Right else TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )

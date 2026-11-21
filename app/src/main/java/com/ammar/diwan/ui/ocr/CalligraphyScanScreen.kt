@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.DocumentScanner
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -52,15 +53,8 @@ import coil.compose.AsyncImage
 import com.ammar.diwan.data.models.Poem
 import com.ammar.diwan.ui.dashboard.PoemCard
 import com.ammar.diwan.ui.onboarding.FluidButton
-import com.ammar.diwan.ui.theme.DiwanTypography
 import com.ammar.diwan.ui.theme.InkMuted
-import com.ammar.diwan.ui.theme.InkPrimary
-import com.ammar.diwan.ui.theme.InkSecondary
-import com.ammar.diwan.ui.theme.InstrumentSerif
-import com.ammar.diwan.ui.theme.LapisNavy
-import com.ammar.diwan.ui.theme.ParchmentBackground
-import com.ammar.diwan.ui.theme.ParchmentBorder
-import com.ammar.diwan.ui.theme.ParchmentSurface
+import com.ammar.diwan.ui.theme.LocalEnglishFont
 
 @Composable
 fun CalligraphyScanScreen(
@@ -88,7 +82,7 @@ fun CalligraphyScanScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(ParchmentBackground)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -109,15 +103,15 @@ fun CalligraphyScanScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         contentDescription = "Back",
-                        tint = InkPrimary
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = "Scan Calligraphy",
-                    fontFamily = InstrumentSerif,
+                    fontFamily = LocalEnglishFont.current,
                     fontSize = 24.sp,
-                    color = InkPrimary
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -130,8 +124,8 @@ fun CalligraphyScanScreen(
                     .height(220.dp)
                     .clickable { imagePicker.launch("image/*") },
                 shape = RoundedCornerShape(16.dp),
-                color = ParchmentSurface,
-                border = BorderStroke(1.dp, ParchmentBorder)
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 if (state.imageUri != null) {
                     AsyncImage(
@@ -151,18 +145,18 @@ fun CalligraphyScanScreen(
                         Icon(
                             imageVector = Icons.Rounded.AddPhotoAlternate,
                             contentDescription = null,
-                            tint = LapisNavy,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(40.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Tap to Select from Gallery",
-                            style = DiwanTypography.bodyMedium,
-                            color = InkSecondary
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Or paste an image from your clipboard below",
-                            style = DiwanTypography.labelSmall,
+                            style = MaterialTheme.typography.labelSmall,
                             color = InkMuted
                         )
                     }
@@ -180,20 +174,20 @@ fun CalligraphyScanScreen(
                     onClick = { viewModel.pasteFromClipboard(context) },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, ParchmentBorder)
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Rounded.ContentPaste,
                             contentDescription = null,
-                            tint = LapisNavy,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "Paste Clipboard",
-                            style = DiwanTypography.labelSmall,
-                            color = InkPrimary
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -202,20 +196,20 @@ fun CalligraphyScanScreen(
                     onClick = { imagePicker.launch("image/*") },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, ParchmentBorder)
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Rounded.AddPhotoAlternate,
                             contentDescription = null,
-                            tint = InkSecondary,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "Choose Photo",
-                            style = DiwanTypography.labelSmall,
-                            color = InkSecondary
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -239,15 +233,15 @@ fun CalligraphyScanScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator(
-                        color = LapisNavy,
+                        color = MaterialTheme.colorScheme.primary,
                         strokeWidth = 2.dp,
                         modifier = Modifier.size(32.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Analyzing ligatures and aerab...",
-                        style = DiwanTypography.bodySmall,
-                        color = InkSecondary
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -256,8 +250,8 @@ fun CalligraphyScanScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = state.errorMessage!!,
-                    color = Color(0xFFB00020),
-                    style = DiwanTypography.bodySmall
+                    color = Color(0xFFEF5350),
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
@@ -266,9 +260,9 @@ fun CalligraphyScanScreen(
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = "Extracted Manuscript",
-                    fontFamily = InstrumentSerif,
+                    fontFamily = LocalEnglishFont.current,
                     fontSize = 22.sp,
-                    color = LapisNavy
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 

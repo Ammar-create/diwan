@@ -2,9 +2,16 @@ package com.ammar.diwan.ui.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -38,24 +45,24 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.CloudSync
-import androidx.compose.material.icons.rounded.Psychology
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -64,17 +71,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ammar.diwan.ui.theme.DiwanTypography
 import com.ammar.diwan.ui.theme.FoilGold
-import com.ammar.diwan.ui.theme.FoilGoldSubtle
 import com.ammar.diwan.ui.theme.InkMuted
-import com.ammar.diwan.ui.theme.InkPrimary
-import com.ammar.diwan.ui.theme.InkSecondary
-import com.ammar.diwan.ui.theme.InstrumentSerif
-import com.ammar.diwan.ui.theme.LapisNavy
-import com.ammar.diwan.ui.theme.NotoNastaliqUrdu
-import com.ammar.diwan.ui.theme.ParchmentBackground
-import com.ammar.diwan.ui.theme.ParchmentBorder
-import com.ammar.diwan.ui.theme.ParchmentSurface
-import com.ammar.diwan.ui.theme.ParchmentSurfaceVariant
+import com.ammar.diwan.ui.theme.LocalEnglishFont
+import com.ammar.diwan.ui.theme.LocalUrduFont
 
 @Composable
 fun OnboardingScreen(
@@ -90,7 +89,7 @@ fun OnboardingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(ParchmentBackground)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
             .imePadding()
@@ -116,7 +115,7 @@ fun OnboardingScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = "Back",
-                            tint = InkPrimary
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 } else {
@@ -142,9 +141,9 @@ fun OnboardingScreen(
                                 .size(if (isCurrent) 16.dp else 6.dp, 6.dp)
                                 .background(
                                     color = when {
-                                        isCurrent -> LapisNavy
+                                        isCurrent -> MaterialTheme.colorScheme.primary
                                         isDone -> FoilGold
-                                        else -> ParchmentBorder
+                                        else -> MaterialTheme.colorScheme.outline
                                     },
                                     shape = RoundedCornerShape(3.dp)
                                 )
@@ -232,10 +231,37 @@ fun OnboardingScreen(
 }
 
 // -------------------------------------------------------------
-// Step 1: Intro (Regal Parchment & Calligraphy Statement)
+// Step 1: Intro with Material 3 Bouncy & Fluid Entrance Animation
 // -------------------------------------------------------------
 @Composable
 private fun StepIntro(onNext: () -> Unit) {
+    val scaleAnim = remember { Animatable(0.85f) }
+    val alphaAnim = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        alphaAnim.animateTo(1f, animationSpec = tween(400, easing = FastOutSlowInEasing))
+    }
+    LaunchedEffect(Unit) {
+        scaleAnim.animateTo(
+            1f,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        )
+    }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 0.95f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1400, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulseScale"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -243,57 +269,81 @@ private fun StepIntro(onNext: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "دیوان",
-            fontFamily = NotoNastaliqUrdu,
-            fontSize = 52.sp,
-            color = LapisNavy,
-            lineHeight = 1.8.sp,
-            textAlign = TextAlign.Center
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .scale(scaleAnim.value)
+                .alpha(alphaAnim.value)
+        ) {
+            Text(
+                text = "دیوان",
+                fontFamily = LocalUrduFont.current,
+                fontSize = 54.sp,
+                color = MaterialTheme.colorScheme.primary,
+                lineHeight = 60.sp,
+                textAlign = TextAlign.Center
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
-            text = "Diwan",
-            fontFamily = InstrumentSerif,
-            fontSize = 32.sp,
-            color = InkPrimary,
-            letterSpacing = (-0.02).sp
-        )
+            Text(
+                text = "Diwan",
+                fontFamily = LocalEnglishFont.current,
+                fontSize = 32.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        // Tactile Quote Card
+        // Tactile Quote Card (Verses never overlap, proper line spacing)
         Surface(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(alphaAnim.value),
             shape = RoundedCornerShape(16.dp),
-            color = ParchmentSurface,
-            border = BorderStroke(1.dp, FoilGoldSubtle)
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "جُرأت آموز مری تابِ سخن ہے مجھ کو\nشکوہ اللہ سے، خاکم بدہن، ہے مجھ کو!",
-                    fontFamily = NotoNastaliqUrdu,
-                    fontSize = 20.sp,
-                    lineHeight = 2.2.sp,
-                    color = InkPrimary,
+                    text = "جُرأت آموز مری تابِ سخن ہے مجھ کو",
+                    fontFamily = LocalUrduFont.current,
+                    fontSize = 21.sp,
+                    lineHeight = 44.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "شکوہ اللہ سے، خاکم بدہن، ہے مجھ کو!",
+                    fontFamily = LocalUrduFont.current,
+                    fontSize = 21.sp,
+                    lineHeight = 44.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
                 Text(
                     text = "❖",
                     color = FoilGold,
-                    fontSize = 14.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier.scale(pulseScale)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
+                Spacer(modifier = Modifier.height(10.dp))
+
                 Text(
                     text = "Classical Urdu poetry anthology, calligraphy digitizer, and conversational companion.",
-                    style = DiwanTypography.bodyMedium,
-                    color = InkSecondary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }
@@ -310,7 +360,7 @@ private fun StepIntro(onNext: () -> Unit) {
 }
 
 // -------------------------------------------------------------
-// Step 2: Provider & API Credentials
+// Step 2: Provider & API Credentials (Dark Mode Optimized)
 // -------------------------------------------------------------
 @Composable
 private fun StepProvider(
@@ -329,22 +379,21 @@ private fun StepProvider(
     ) {
         Text(
             text = "Model Connection",
-            fontFamily = InstrumentSerif,
+            fontFamily = LocalEnglishFont.current,
             fontSize = 28.sp,
-            color = InkPrimary,
-            letterSpacing = (-0.01).sp
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
             text = "Connect an OpenAI-compatible endpoint for calligraphy OCR, verse analysis, and poet conversations.",
-            style = DiwanTypography.bodySmall,
-            color = InkSecondary
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         // Presets
         Text(
             text = "Preset Providers",
-            style = DiwanTypography.labelSmall,
+            style = MaterialTheme.typography.labelSmall,
             color = InkMuted
         )
 
@@ -362,10 +411,10 @@ private fun StepProvider(
                         .weight(1f)
                         .clickable { onSelectPreset(preset) },
                     shape = RoundedCornerShape(10.dp),
-                    color = if (isSelected) ParchmentSurfaceVariant else ParchmentSurface,
+                    color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
                     border = BorderStroke(
                         1.dp,
-                        if (isSelected) LapisNavy else ParchmentBorder
+                        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                     )
                 ) {
                     Box(
@@ -374,9 +423,9 @@ private fun StepProvider(
                     ) {
                         Text(
                             text = preset,
-                            style = DiwanTypography.bodyMedium,
+                            style = MaterialTheme.typography.bodyMedium,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) LapisNavy else InkPrimary
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -387,7 +436,7 @@ private fun StepProvider(
         OutlinedTextField(
             value = state.baseUrl,
             onValueChange = onUpdateBaseUrl,
-            label = { Text("Base URL", color = InkSecondary) },
+            label = { Text("Base URL") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -398,7 +447,7 @@ private fun StepProvider(
         OutlinedTextField(
             value = state.apiKey,
             onValueChange = onUpdateApiKey,
-            label = { Text("API Key", color = InkSecondary) },
+            label = { Text("API Key") },
             placeholder = { Text("sk-...", color = InkMuted) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
@@ -409,16 +458,16 @@ private fun StepProvider(
         if (state.errorMessage != null) {
             Text(
                 text = state.errorMessage,
-                color = Color(0xFFB00020),
-                style = DiwanTypography.bodySmall
+                color = Color(0xFFEF5350),
+                style = MaterialTheme.typography.bodySmall
             )
         }
 
         if (state.statusMessage != null) {
             Text(
                 text = state.statusMessage,
-                color = LapisNavy,
-                style = DiwanTypography.bodySmall
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodySmall
             )
         }
 
@@ -435,9 +484,9 @@ private fun StepProvider(
             onClick = onSkip,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(1.dp, ParchmentBorder)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
-            Text("Skip for Now", color = InkSecondary)
+            Text("Skip for Now", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -460,21 +509,21 @@ private fun StepModels(
     ) {
         Text(
             text = "Model Assignments",
-            fontFamily = InstrumentSerif,
+            fontFamily = LocalEnglishFont.current,
             fontSize = 28.sp,
-            color = InkPrimary
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
             text = "Assign which model parses calligraphy images (Vision) and which answers poetic inquiries (Chat).",
-            style = DiwanTypography.bodySmall,
-            color = InkSecondary
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         OutlinedTextField(
             value = state.chatModel,
             onValueChange = onUpdateChatModel,
-            label = { Text("Chat & Scholar Model", color = InkSecondary) },
+            label = { Text("Chat & Scholar Model") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -484,7 +533,7 @@ private fun StepModels(
         OutlinedTextField(
             value = state.visionModel,
             onValueChange = onUpdateVisionModel,
-            label = { Text("Vision & OCR Model", color = InkSecondary) },
+            label = { Text("Vision & OCR Model") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -494,15 +543,15 @@ private fun StepModels(
         if (state.availableModels.isNotEmpty()) {
             Text(
                 text = "Detected Models (${state.availableModels.size})",
-                style = DiwanTypography.labelSmall,
+                style = MaterialTheme.typography.labelSmall,
                 color = InkMuted
             )
 
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                color = ParchmentSurface,
-                border = BorderStroke(1.dp, ParchmentBorder)
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     state.availableModels.take(6).forEach { modelId ->
@@ -525,13 +574,13 @@ private fun StepModels(
                         ) {
                             Text(
                                 text = modelId,
-                                style = DiwanTypography.bodySmall,
-                                color = InkPrimary
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = "Select",
-                                style = DiwanTypography.labelSmall,
-                                color = LapisNavy
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -567,15 +616,15 @@ private fun StepPersona(
     ) {
         Text(
             text = "Poet Companion",
-            fontFamily = InstrumentSerif,
+            fontFamily = LocalEnglishFont.current,
             fontSize = 28.sp,
-            color = InkPrimary
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
             text = "Choose the voice and intellect of your poetry companion. You can fine-tune this in Settings anytime.",
-            style = DiwanTypography.bodySmall,
-            color = InkSecondary
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Row(
@@ -589,10 +638,10 @@ private fun StepPersona(
                         .weight(1f)
                         .clickable { onSelectPreset(poet) },
                     shape = RoundedCornerShape(10.dp),
-                    color = if (isSelected) ParchmentSurfaceVariant else ParchmentSurface,
+                    color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
                     border = BorderStroke(
                         1.dp,
-                        if (isSelected) LapisNavy else ParchmentBorder
+                        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                     )
                 ) {
                     Box(
@@ -601,9 +650,9 @@ private fun StepPersona(
                     ) {
                         Text(
                             text = poet,
-                            style = DiwanTypography.bodyMedium,
+                            style = MaterialTheme.typography.bodyMedium,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) LapisNavy else InkPrimary
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -613,7 +662,7 @@ private fun StepPersona(
         OutlinedTextField(
             value = state.systemPrompt,
             onValueChange = onUpdatePrompt,
-            label = { Text("Companion System Prompt", color = InkSecondary) },
+            label = { Text("Companion System Prompt") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(160.dp),
@@ -654,17 +703,17 @@ private fun StepCompleted(onEnter: () -> Unit) {
 
         Text(
             text = "The Diwan is Open",
-            fontFamily = InstrumentSerif,
+            fontFamily = LocalEnglishFont.current,
             fontSize = 32.sp,
-            color = InkPrimary
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = "Your anthology and calligraphy digitizer are ready. Immerse yourself in the verse.",
-            style = DiwanTypography.bodyMedium,
-            color = InkSecondary,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 
@@ -710,9 +759,9 @@ fun FluidButton(
             .scale(scale),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = LapisNavy,
-            contentColor = ParchmentBackground,
-            disabledContainerColor = ParchmentBorder,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.outline,
             disabledContentColor = InkMuted
         )
     ) {
@@ -722,7 +771,7 @@ fun FluidButton(
         ) {
             Text(
                 text = text,
-                style = DiwanTypography.labelLarge,
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold
             )
             if (icon != null) {
@@ -738,12 +787,14 @@ fun FluidButton(
 }
 
 @Composable
-private fun diwanTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = LapisNavy,
-    unfocusedBorderColor = ParchmentBorder,
-    focusedTextColor = InkPrimary,
-    unfocusedTextColor = InkPrimary,
-    focusedContainerColor = ParchmentSurface,
-    unfocusedContainerColor = ParchmentSurface,
-    cursorColor = LapisNavy
+fun diwanTextFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+    focusedContainerColor = MaterialTheme.colorScheme.surface,
+    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+    cursorColor = MaterialTheme.colorScheme.primary,
+    focusedLabelColor = MaterialTheme.colorScheme.primary,
+    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
 )

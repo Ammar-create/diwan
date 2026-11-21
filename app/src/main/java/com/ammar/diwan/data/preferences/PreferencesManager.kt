@@ -24,10 +24,17 @@ class PreferencesManager(private val context: Context) {
         val KEY_SYSTEM_PROMPT = stringPreferencesKey("system_prompt")
         val KEY_TEMPERATURE = floatPreferencesKey("temperature")
         val KEY_SHOW_ROMAN = booleanPreferencesKey("show_roman")
+        val KEY_THEME_MODE = stringPreferencesKey("theme_mode") // "system", "dark", "light"
+        val KEY_ENGLISH_FONT = stringPreferencesKey("english_font") // "instrument", "google_sans", "comic", "inter"
+        val KEY_URDU_FONT = stringPreferencesKey("urdu_font") // "noto_nastaliq", "jameel_noori", "gulzar"
 
         const val DEFAULT_BASE_URL = "https://api.aquadevs.com/v1"
         const val DEFAULT_CHAT_MODEL = "deepseek-flash-1017"
         const val DEFAULT_VISION_MODEL = "gemini-1.5-flash"
+        const val DEFAULT_THEME_MODE = "system"
+        const val DEFAULT_ENGLISH_FONT = "instrument"
+        const val DEFAULT_URDU_FONT = "noto_nastaliq"
+
         const val DEFAULT_SYSTEM_PROMPT = """You are a master scholar of classical Urdu poetry, aesthetics, and meter (bahr). You speak with reverence, deep literary knowledge, and eloquent charm. When asked, analyze verses with precision, illuminate Persian/Arabic roots, and provide both authentic Nastaliq text and rhythmic Roman Urdu transliteration."""
     }
 
@@ -63,6 +70,18 @@ class PreferencesManager(private val context: Context) {
         prefs[KEY_SHOW_ROMAN] ?: true
     }
 
+    val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[KEY_THEME_MODE] ?: DEFAULT_THEME_MODE
+    }
+
+    val englishFont: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[KEY_ENGLISH_FONT] ?: DEFAULT_ENGLISH_FONT
+    }
+
+    val urduFont: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[KEY_URDU_FONT] ?: DEFAULT_URDU_FONT
+    }
+
     suspend fun saveSetup(
         baseUrl: String,
         apiKey: String,
@@ -86,7 +105,10 @@ class PreferencesManager(private val context: Context) {
         chatModel: String,
         visionModel: String,
         systemPrompt: String,
-        temperature: Float
+        temperature: Float,
+        themeMode: String,
+        englishFont: String,
+        urduFont: String
     ) {
         context.dataStore.edit { prefs ->
             prefs[KEY_BASE_URL] = baseUrl
@@ -95,6 +117,9 @@ class PreferencesManager(private val context: Context) {
             prefs[KEY_VISION_MODEL] = visionModel
             prefs[KEY_SYSTEM_PROMPT] = systemPrompt
             prefs[KEY_TEMPERATURE] = temperature
+            prefs[KEY_THEME_MODE] = themeMode
+            prefs[KEY_ENGLISH_FONT] = englishFont
+            prefs[KEY_URDU_FONT] = urduFont
         }
     }
 

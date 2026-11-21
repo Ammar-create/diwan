@@ -2,6 +2,7 @@ package com.ammar.diwan.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ammar.diwan.data.debug.DebugLogger
 import com.ammar.diwan.data.preferences.PreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,12 @@ data class SettingsUiState(
     val visionModel: String = "",
     val systemPrompt: String = "",
     val temperature: Float = 0.7f,
-    val isSaved: Boolean = false
+    val themeMode: String = "system",
+    val englishFont: String = "instrument",
+    val urduFont: String = "noto_nastaliq",
+    val isSaved: Boolean = false,
+    val showLogsDialog: Boolean = false,
+    val logs: List<String> = emptyList()
 )
 
 class SettingsViewModel(
@@ -40,7 +46,10 @@ class SettingsViewModel(
                     chatModel = preferencesManager.chatModel.first(),
                     visionModel = preferencesManager.visionModel.first(),
                     systemPrompt = preferencesManager.systemPrompt.first(),
-                    temperature = preferencesManager.temperature.first()
+                    temperature = preferencesManager.temperature.first(),
+                    themeMode = preferencesManager.themeMode.first(),
+                    englishFont = preferencesManager.englishFont.first(),
+                    urduFont = preferencesManager.urduFont.first()
                 )
             }
         }
@@ -52,6 +61,22 @@ class SettingsViewModel(
     fun updateVisionModel(v: String) = _uiState.update { it.copy(visionModel = v, isSaved = false) }
     fun updateSystemPrompt(v: String) = _uiState.update { it.copy(systemPrompt = v, isSaved = false) }
     fun updateTemperature(v: Float) = _uiState.update { it.copy(temperature = v, isSaved = false) }
+    fun updateThemeMode(v: String) = _uiState.update { it.copy(themeMode = v, isSaved = false) }
+    fun updateEnglishFont(v: String) = _uiState.update { it.copy(englishFont = v, isSaved = false) }
+    fun updateUrduFont(v: String) = _uiState.update { it.copy(urduFont = v, isSaved = false) }
+
+    fun openLogs() {
+        _uiState.update { it.copy(showLogsDialog = true, logs = DebugLogger.logsFlow.value) }
+    }
+
+    fun closeLogs() {
+        _uiState.update { it.copy(showLogsDialog = false) }
+    }
+
+    fun clearLogs() {
+        DebugLogger.clear()
+        _uiState.update { it.copy(logs = emptyList()) }
+    }
 
     fun saveSettings() {
         viewModelScope.launch {
@@ -62,9 +87,13 @@ class SettingsViewModel(
                 chatModel = s.chatModel,
                 visionModel = s.visionModel,
                 systemPrompt = s.systemPrompt,
-                temperature = s.temperature
+                temperature = s.temperature,
+                themeMode = s.themeMode,
+                englishFont = s.englishFont,
+                urduFont = s.urduFont
             )
             _uiState.update { it.copy(isSaved = true) }
+            DebugLogger.log("Settings", "Settings updated successfully")
         }
     }
 

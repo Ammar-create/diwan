@@ -8,10 +8,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,13 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.MenuBook
-import androidx.compose.material.icons.rounded.Bookmark
-import androidx.compose.material.icons.rounded.BookmarkBorder
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Translate
@@ -35,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,27 +40,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ammar.diwan.data.models.Poem
-import com.ammar.diwan.ui.theme.DiwanTypography
 import com.ammar.diwan.ui.theme.FoilGold
-import com.ammar.diwan.ui.theme.FoilGoldSubtle
 import com.ammar.diwan.ui.theme.GarnetRuby
 import com.ammar.diwan.ui.theme.InkMuted
-import com.ammar.diwan.ui.theme.InkPrimary
-import com.ammar.diwan.ui.theme.InkSecondary
-import com.ammar.diwan.ui.theme.InstrumentSerif
-import com.ammar.diwan.ui.theme.LapisNavy
-import com.ammar.diwan.ui.theme.NotoNastaliqUrdu
-import com.ammar.diwan.ui.theme.ParchmentBackground
-import com.ammar.diwan.ui.theme.ParchmentBorder
-import com.ammar.diwan.ui.theme.ParchmentSurface
-import com.ammar.diwan.ui.theme.ParchmentSurfaceVariant
+import com.ammar.diwan.ui.theme.LocalEnglishFont
+import com.ammar.diwan.ui.theme.LocalUrduFont
 
 @Composable
 fun PoemCard(
@@ -78,12 +63,15 @@ fun PoemCard(
     var showEnglishTranslation by remember { mutableStateOf(false) }
     var showExplanation by remember { mutableStateOf(false) }
 
+    val urduFont = LocalUrduFont.current
+    val englishFont = LocalEnglishFont.current
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp)),
-        colors = CardDefaults.cardColors(containerColor = ParchmentBackground),
-        border = BorderStroke(1.dp, FoilGoldSubtle),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -96,13 +84,13 @@ fun PoemCard(
             // Poet Badge
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = ParchmentSurfaceVariant,
-                border = BorderStroke(0.5.dp, ParchmentBorder)
+                color = MaterialTheme.colorScheme.primaryContainer,
+                border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Text(
                     text = poem.poetEnglish,
-                    style = DiwanTypography.labelSmall,
-                    color = GarnetRuby,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                 )
@@ -110,13 +98,13 @@ fun PoemCard(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Main Poetic Title in Lapis Navy Nastaliq (Matching the uploaded image)
+            // Main Poetic Title
             Text(
                 text = "${poem.titleUrdu} — ${poem.poetUrdu}",
-                fontFamily = NotoNastaliqUrdu,
+                fontFamily = urduFont,
                 fontSize = 30.sp,
-                lineHeight = 2.2.sp,
-                color = LapisNavy,
+                lineHeight = 52.sp,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -124,7 +112,7 @@ fun PoemCard(
             Spacer(modifier = Modifier.height(18.dp))
 
             // Verses Block (Cascading Nastaliq + Romanization)
-            poem.verses.forEachIndexed { index, verse ->
+            poem.verses.forEachIndexed { _, verse ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -134,10 +122,10 @@ fun PoemCard(
                     // Authentic Urdu Verse
                     Text(
                         text = verse.urdu,
-                        fontFamily = NotoNastaliqUrdu,
+                        fontFamily = urduFont,
                         fontSize = 24.sp,
-                        lineHeight = 2.2.sp,
-                        color = InkPrimary,
+                        lineHeight = 48.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -155,9 +143,10 @@ fun PoemCard(
                     ) {
                         Text(
                             text = verse.roman,
-                            style = DiwanTypography.bodyMedium,
+                            fontFamily = englishFont,
+                            style = MaterialTheme.typography.bodyMedium,
                             fontStyle = FontStyle.Italic,
-                            color = InkSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -173,7 +162,7 @@ fun PoemCard(
                     ) {
                         Text(
                             text = verse.english,
-                            style = DiwanTypography.bodySmall,
+                            style = MaterialTheme.typography.bodySmall,
                             color = InkMuted,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
@@ -202,8 +191,8 @@ fun PoemCard(
                         .fillMaxWidth()
                         .clickable { showExplanation = !showExplanation },
                     shape = RoundedCornerShape(12.dp),
-                    color = ParchmentSurface,
-                    border = BorderStroke(0.5.dp, ParchmentBorder)
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
                         Row(
@@ -213,13 +202,13 @@ fun PoemCard(
                         ) {
                             Text(
                                 text = "مفہوم و تشریح (Explanation)",
-                                fontFamily = InstrumentSerif,
+                                fontFamily = englishFont,
                                 fontSize = 18.sp,
-                                color = LapisNavy
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = if (showExplanation) "Hide" else "Read",
-                                style = DiwanTypography.labelSmall,
+                                style = MaterialTheme.typography.labelSmall,
                                 color = FoilGold
                             )
                         }
@@ -228,10 +217,10 @@ fun PoemCard(
                             Column(modifier = Modifier.padding(top = 10.dp)) {
                                 Text(
                                     text = poem.explanationUrdu,
-                                    fontFamily = NotoNastaliqUrdu,
+                                    fontFamily = urduFont,
                                     fontSize = 18.sp,
-                                    lineHeight = 2.0.sp,
-                                    color = InkPrimary,
+                                    lineHeight = 36.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     textAlign = TextAlign.Right,
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -239,8 +228,8 @@ fun PoemCard(
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         text = poem.explanationEnglish,
-                                        style = DiwanTypography.bodySmall,
-                                        color = InkSecondary
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -261,7 +250,7 @@ fun PoemCard(
                     Icon(
                         imageVector = Icons.Rounded.ContentCopy,
                         contentDescription = "Copy verses",
-                        tint = InkSecondary,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -270,7 +259,7 @@ fun PoemCard(
                     Icon(
                         imageVector = Icons.Rounded.Translate,
                         contentDescription = "Toggle English translation",
-                        tint = if (showEnglishTranslation) LapisNavy else InkSecondary,
+                        tint = if (showEnglishTranslation) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -279,7 +268,7 @@ fun PoemCard(
                     Icon(
                         imageVector = Icons.Rounded.Share,
                         contentDescription = "Share card",
-                        tint = InkSecondary,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
                 }
