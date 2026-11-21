@@ -56,7 +56,7 @@ fun DiwanNavHost(preferencesManager: PreferencesManager) {
         navController = navController,
         startDestination = startDestination,
         enterTransition = {
-            slideInHorizontally(DiwanMotion.FluidSpatialInt) { it / 4 } +
+            slideInHorizontally(DiwanMotion.FluidSpatialOffset) { it / 4 } +
                 fadeIn(DiwanMotion.enterFade(240))
         },
         exitTransition = {
@@ -64,7 +64,7 @@ fun DiwanNavHost(preferencesManager: PreferencesManager) {
                 fadeOut(DiwanMotion.exitFade(140))
         },
         popEnterTransition = {
-            slideInHorizontally(DiwanMotion.FluidSpatialInt) { -it / 4 } +
+            slideInHorizontally(DiwanMotion.FluidSpatialOffset) { -it / 4 } +
                 fadeIn(DiwanMotion.enterFade(240))
         },
         popExitTransition = {
@@ -95,7 +95,7 @@ fun DiwanNavHost(preferencesManager: PreferencesManager) {
                 if (initialState.destination.route == Destinations.ONBOARDING) {
                     fadeIn(tween(280)) + scaleIn(initialScale = 0.96f)
                 } else {
-                    slideInHorizontally(DiwanMotion.FluidSpatialInt) { it / 4 } +
+                    slideInHorizontally(DiwanMotion.FluidSpatialOffset) { it / 4 } +
                         fadeIn(DiwanMotion.enterFade(240))
                 }
             }
