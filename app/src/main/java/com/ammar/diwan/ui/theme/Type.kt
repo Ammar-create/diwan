@@ -124,3 +124,5 @@ fun createDiwanTypography(
         letterSpacing = 0.sp
     )
 )
+
+val DiwanTypography: Typography = createDiwanTypography()
